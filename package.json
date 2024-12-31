@@ -1,9 +1,9 @@
 {
-  "name": "Loot Randomiser",
-  "version": "1.3.2",
+  "name": "Loot Randomiser Porting 3.10",
+  "version": "1.0",
   "main": "src/lootrandomiser.js",
   "license": "NCSA",
-  "author": "jenwalter",
+  "author": "Affengeneral",
   "sptVersion": "3.10.*",
   "scripts": {
       "setup": "npm i",
