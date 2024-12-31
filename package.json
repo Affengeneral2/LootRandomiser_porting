@@ -1,6 +1,6 @@
 {
-  "name": "Loot Randomiser Porting 3.10",
-  "version": "1.0",
+  "name": "Loot Randomiser Porting",
+  "version": "1.0.0",
   "main": "src/lootrandomiser.js",
   "license": "NCSA",
   "author": "Affengeneral",
