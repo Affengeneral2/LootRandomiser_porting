@@ -1,6 +1,6 @@
 // University of Illinois/NCSA Open Source License
 
-// Copyright (c) [year] [fullname]. All rights reserved.
+// Copyright (c) 2024 Affengeneral. All rights reserved.
 
 // Developed by: Loot Randomizer 3.10 Port
 //               Affengeneral
@@ -21,7 +21,7 @@
 //   notice, this list of conditions and the following disclaimers in the
 //   documentation and/or other materials provided with the distribution.
 
-// * Neither the names of [fullname], [project] nor the names of its
+// * Neither the names of Affengeneral, "Loot Randomizer Porting" nor the names of its
 //   contributors may be used to endorse or promote products derived from
 //   this Software without specific prior written permission.
 
