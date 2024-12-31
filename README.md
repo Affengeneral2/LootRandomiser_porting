@@ -4,6 +4,7 @@ Copyright (c) 2024 Affengeneral. All rights reserved.
 
 Developed by: Loot Randomizer Porting
               Affengeneral
+              https://github.com/Affengeneral2/LootRandomiser_porting
               
 
 Permission is hereby granted, free of charge, to any person
@@ -21,7 +22,7 @@ subject to the following conditions:
   notice, this list of conditions and the following disclaimers in the
   documentation and/or other materials provided with the distribution.
 
-* Neither the names of [fullname], [project] nor the names of its
+* Neither the names of Affengeneral, "Loot Randomizer Porting" nor the names of its
   contributors may be used to endorse or promote products derived from
   this Software without specific prior written permission.
 
