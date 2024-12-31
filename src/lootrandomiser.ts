@@ -2,9 +2,9 @@
 
 // Copyright (c) [year] [fullname]. All rights reserved.
 
-// Developed by: [Loot Randomizer 3.10 Port]
-//               [Affengeneral]
-//               [projecturl]
+// Developed by: Loot Randomizer 3.10 Port
+//               Affengeneral
+//               https://github.com/Affengeneral2/LootRandomiser_porting
 
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation files
