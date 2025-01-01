@@ -3,8 +3,6 @@
 	"console_spam": false,
 	"quest_items": false,
 	"loot_size_multiplier": 1,
-	"container_size_multiplier": 1,
-	"loot_static": true,
 	"loot_rate_default": 1,
 	"loot_quantity_distributions": [
 		{
