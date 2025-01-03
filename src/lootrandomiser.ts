@@ -1,7 +1,8 @@
-import { DependencyContainer } from "tsyringe"
+import type { DependencyContainer } from "tsyringe"
 import type { ILogger } from "@spt/models/spt/utils/ILogger"
 import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod"
 import type { DatabaseServer } from "@spt/servers/DatabaseServer"
+import type { IStaticItem } from "@spt/models/eft/common/ILocation"
 
 class LootRandomiser implements IPostDBLoadMod {
     private container: DependencyContainer
@@ -10,23 +11,21 @@ class LootRandomiser implements IPostDBLoadMod {
     public hasProps(item: string | number) {
         const database = this.container.resolve<DatabaseServer>("DatabaseServer").getTables()
         const items = database.templates.items
-        if (items[item] != undefined && items[item]._props != undefined && Object.entries(items[item]._props).length > 5) {
+        if (items[item] !== undefined && items[item]._props !== undefined && Object.entries(items[item]._props).length > 5) {
             return true
         }
-        else {
+        
             return false
-        }
     }
 
-    public logif(logger: ILogger, message: string, color: string) {
+    public logif(message: string, color: string) {
         if (this.config.console_spam === true) {
-            logger = this.container.resolve<ILogger>("WinstonLogger")
-            logger.log("[Loot Randomiser] " + message, color)
+            const logger = this.container.resolve<ILogger>("WinstonLogger")
+            logger.log(`[Loot Randomiser] ${message}`, color)
         }
     }
 
     public postDBLoad(container: DependencyContainer): void {
-        debugger
         this.container = container
         const logger = this.container.resolve<ILogger>("WinstonLogger")
         const tbls = container.resolve<DatabaseServer>("DatabaseServer").getTables()
@@ -37,17 +36,18 @@ class LootRandomiser implements IPostDBLoadMod {
         const lootRatesbyParent = this.config.loot_rate_by_parents
         const lootRates = this.config.loot_rate
         const sizemult = this.config.loot_size_multiplier
+        const excludeContainerType = this.config.exclude_containertype
         if (this.config.enabled === true) {
             const lootList = []
             for (const iter in hdb) {
                 const item = hdb[iter].Id
                 if (this.hasProps(item) === true) {
                     if (idb[item]?._props?.Prefab?.path === "") {
-                        this.logif(logger, "Excluding " + item + " : Has no prefab", "red")
+                        this.logif(`Excluding ${item} : Has no prefab`, "red")
                         continue
                     }
                     if (idb[item]?._props?.QuestItem === true && this.config.quest_items !== true) {
-                        this.logif(logger, "Excluding " + item + " : Quest-only items disabled by config", "yellow")
+                        this.logif(`Excluding ${item} : Quest-only items disabled by config`, "yellow")
                         continue
                     }
                     if (sizemult !== 1) {
@@ -65,12 +65,12 @@ class LootRandomiser implements IPostDBLoadMod {
                         idb[item]._props.ExtraSizeRight = Math.max(0, Math.round(oldsizeaddr * sizemult))
                     }
                     if (excludeID.indexOf(item) !== -1) {
-                        this.logif(logger, "Excluding " + item + " : Excluded by config", "yellow")
+                        this.logif(`Excluding ${item} : Excluded by config`, "yellow")
                         continue
                     }
                     const parent = idb[item]?._parent
                     if (excludeParent.indexOf(parent) !== -1) {
-                        this.logif(logger, "Excluding " + item + " : Parent is excluded by config (" + parent + ")", "yellow")
+                        this.logif(`Excluding ${item} : Parent is excluded by config (${parent})`, "yellow")
                         continue
                     }
                     let rate = 1
@@ -79,7 +79,7 @@ class LootRandomiser implements IPostDBLoadMod {
                             rate = Math.ceil(lootRates[item])
                         }
                         else {
-                            this.logif(logger, "Excluding " + item + " : Spawn rate is zero or less", "yellow")
+                            this.logif(`Excluding ${item} : Spawn rate is zero or less`, "yellow")
                             continue
                         }
                     }
@@ -88,20 +88,25 @@ class LootRandomiser implements IPostDBLoadMod {
                             rate = Math.ceil(lootRatesbyParent[parent])
                         }
                         else {
-                            this.logif(logger, "Excluding " + item + " : Spawn rate of parent (" + parent + ") is zero or less", "yellow")
+                            this.logif(`Excluding ${item} : Spawn rate of parent (${parent}) is zero or less`, "yellow")
                             continue
                         }
                     }
-                    this.logif(logger, "Including " + item + " : Spawn rate x" + rate, "green")
+                    this.logif(`Including ${item} : Spawn rate x${rate}`, "green")
                     lootList.push({ tpl: item, relativeProbability: rate })
                 }
             }
 
             for (const [locationName, locationData] of Object.entries(tbls.locations)) {
-                this.logif(logger, "Modifying Staticloot for " + locationName + ":", "green")
+                this.logif(`Modifying Staticloot for ${locationName}:`, "green")
                 const ldb = locationData.staticLoot
                 for (const id in ldb) {
-                    this.logif(logger, "Patching " + id, "cyan")
+                    if (excludeContainerType !== undefined && excludeContainerType.indexOf(id) > -1)
+                    {
+                        this.logif(`Excluding containertype ${id}`, "red")
+                        continue
+                    }
+                    this.logif(`Patching ${id}`, "cyan")
                     ldb[id].itemDistribution = lootList
                     if (this.config.loot_quantity_distributions.length > 0) {
                         ldb[id].itemcountDistribution = this.config.loot_quantity_distributions
